@@ -16,8 +16,6 @@ bouncy jump massacure is a platformer shooter where bullets bounce off walls as 
 ## controls:
 start: any
 
-restart: r
-
 movement: arrow keys (up to jump, right/left to move)
 
 aiming: e and d
