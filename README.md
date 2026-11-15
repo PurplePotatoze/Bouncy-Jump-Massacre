@@ -27,3 +27,8 @@ play and find out!
 
 ## fyi
 takes a while to load on itch.io, it will be a black screen for a little while before it starts
+
+
+## Play
+
+https://ninew9.itch.io/bouncy-jump-massacre
