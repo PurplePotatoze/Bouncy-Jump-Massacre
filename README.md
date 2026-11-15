@@ -12,6 +12,9 @@ original art: will chia
 bouncy jump massacure is a platformer shooter where bullets bounce off walls as a fun way to "unalive" enemys.
 
 ## controls:
+start: any
+
+restart: r
 
 movement: arrow keys (up to jump, right/left to move)
 
