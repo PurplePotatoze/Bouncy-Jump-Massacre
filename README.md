@@ -1,3 +1,5 @@
+<img width="1200" height="960" alt="IMG_9099" src="https://github.com/user-attachments/assets/18a8005e-b879-43cf-a53d-7adcd1e26575" />
+
 # Bouncy Jump Massacre
 
 this game was made from scratch for hackclub haven; no game engine, premade assets or premade music.
