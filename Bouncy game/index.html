@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bouncy game!</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Redaction+35:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.3/p5.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    #stage {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: min(100vw, calc(100vh * 5 / 4));
+      aspect-ratio: 5 / 4;
+    }
+
+    #design {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      container-type: inline-size;
+    }
+
+    #design canvas {
+      width: 100% !important;
+      height: 100% !important;
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="stage">
+    <div id="design"></div>
+  </div>
+
+  <script>
+    let p1, p2, p3, p4, p5, p6;
+    let gun, bulletImg;
+    let hatch, machini;
+    let d1, d2, d3, d4, d5, d6, d7, d8, d9;
+    let db1, db2, db3, db4, db5, db6, db7, db8, db9, db10, db11, db12, db13, db14;
+    let b1, b2, b3, b4, b5;
+    let dj1, dj2, dj3, dj4, dj5;
+    let blast1, blast2, blast3;
+    let bgg;
+    let block;
+    let slope1, slope2;
+    let bounce;
+    let cover;
+    let preL1, preL2, preL3, preL4;
+    let l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, l16, l17, l18, l19, l20, l21, l22;
+
+    let game = false;
+    let spawnTimer = 0;
+    let spawnInterval = 300;
+    let spawnDifficultyTimer = 0;
+    let maxEnemies = 14;
+
+    let map = [
+      ".......................................................................................................",
+      ".......................................................................................................",
+      ".......................................................................................................",
+      ".................................................................###...................................",
+      ".......................................................................................................",
+      ".......................................................................................................",
+      ".............................................................#######...................................",
+      ".......................................................................................................",
+      "................................................................................####...................",
+      ".......................................................................................................",
+      "........................................................................................................",
+      ".......................................................................................................",
+      ".......................................................................................................",
+      ".......................................................................................................",
+      ".............................../##############\\........................................./BBB\\.........",
+      "................./#################################BBB#####\\.................../#############\\........",
+      "#######################################################################################################",
+      "#######################################################################################################",
+      "#######################################################################################################",
+      "#######################################################################################################",
+      "#######################################################################################################",
+      "#######################################################################################################",
+      "#######################################################################################################",
+      "......................................................................................................."
+    ];
+
+    let tileSize = 50;
+
+    let vx = 0;
+    let vy = 0;
+
+    let x = 150;
+    let y = 100;
+
+    let cameraX = 0;
+    let cameraY = 0;
+
+    let angles = 0;
+    let playerAngle = 0;
+    let canJump = false;
+    let canDoubleJump = false;
+    let doubleJumping = false;
+    let doubleJumpTimer = 0;
+    let doubleJumpDuration = 30;
+    let flipAngle = 0;
+
+    let bullets = [];
+    let blasts = [];
+    let badguys = [];
+    let thrownWeapons = [];
+    let canShoot = 40;
+
+    let walking = false;
+    let walkFrame = 1;
+    let facing = -1;
+
+    let playerFlipFrom = 1;
+    let playerFlipTimer = 1;
+
+    let dead = 0;
+    let stun = 0;
+    let rWallBounce = 70;
+
+    function preload() {
+      cover = loadImage("cover.jpeg");
+
+      p1 = loadImage("player1.png");
+      p2 = loadImage("player2.png");
+      p3 = loadImage("player3.png");
+      p4 = loadImage("player4.png");
+      p5 = loadImage("player5.png");
+      p6 = loadImage("player6.png");
+
+      bounce = loadImage("bounce.jpg");
+
+      gun = loadImage("gun.png");
+      bulletImg = loadImage("bullet.png");
+
+      hatch = loadImage("hatch.png");
+      machini = loadImage("machini.png");
+
+      d1 = loadImage("dead1.png");
+      d2 = loadImage("dead2.png");
+      d3 = loadImage("dead3.png");
+      d4 = loadImage("dead4.png");
+      d5 = loadImage("dead5.png");
+      d6 = loadImage("dead6.png");
+      d7 = loadImage("dead7.png");
+      d8 = loadImage("dead8.png");
+      d9 = loadImage("dead9.png");
+
+      b1 = loadImage("badguy-1.png");
+      b2 = loadImage("badguy-2.png");
+      b3 = loadImage("badguy-3.png");
+      b4 = loadImage("badguy-4.png");
+      b5 = loadImage("badguy-5.png");
+
+      db1 = loadImage("dieboi-1.png");
+      db2 = loadImage("dieboi-2.png");
+      db3 = loadImage("dieboi-3.png");
+      db4 = loadImage("dieboi-4.png");
+      db5 = loadImage("dieboi-5.png");
+      db6 = loadImage("dieboi-6.png");
+      db7 = loadImage("dieboi-7.png");
+      db8 = loadImage("dieboi-8.png");
+      db9 = loadImage("dieboi-9.png");
+      db10 = loadImage("dieboi-10.png");
+      db11 = loadImage("dieboi-11.png");
+      db12 = loadImage("dieboi-12.png");
+      db13 = loadImage("dieboi-13.png");
+      db14 = loadImage("dieboi-14.png");
+
+      dj1 = loadImage("djump-1.png");
+      dj2 = loadImage("djump-2.png");
+      dj3 = loadImage("djump-3.png");
+      dj4 = loadImage("djump-4.png");
+      dj5 = loadImage("djump-5.png");
+
+      preL1 = loadImage("lprep-1.png");
+      preL2 = loadImage("lprep-2.png");
+      preL3 = loadImage("lprep-3.png");
+      preL4 = loadImage("lprep-4.png");
+
+      l1 = loadImage("l-1.png");
+      l2 = loadImage("l-2.png");
+      l3 = loadImage("l-3.png");
+      l4 = loadImage("l-4.png");
+      l5 = loadImage("l-5.png");
+      l6 = loadImage("l-6.png");
+      l7 = loadImage("l-7.png");
+      l8 = loadImage("l-8.png");
+      l9 = loadImage("l-9.png");
+      l10 = loadImage("l-10.png");
+      l11 = loadImage("l-11.png");
+      l12 = loadImage("l-12.png");
+      l13 = loadImage("l-13.png");
+      l14 = loadImage("l-14.png");
+      l15 = loadImage("l-15.png");
+      l16 = loadImage("l-16.png");
+      l17 = loadImage("l-17.png");
+      l18 = loadImage("l-18.png");
+      l19 = loadImage("l-19.png");
+      l20 = loadImage("l-20.png");
+      l21 = loadImage("l-21.png");
+      l22 = loadImage("l-22.png");
+
+      blast1 = loadImage("blasty-1.png");
+      blast2 = loadImage("blasty-2.png");
+      blast3 = loadImage("blasty-3.png");
+
+      bgg = loadImage("bggg.jpg");
+      block = loadImage("texty.jpg");
+
+      slope1 = loadImage("slopeONE.png");
+      slope2 = loadImage("slopeTWO.png");
+    }
+
+    function createBadguy(enemyX, falling = false) {
+      let ground = getGroundHeight(enemyX + 50);
+
+      return {
+        x: enemyX,
+        y: falling ? random(-700, -300) : ground - 100,
+        minX: enemyX - 50,
+        maxX: enemyX + 50,
+        direction: 1,
+        flipFrom: 1,
+        flipTimer: 1,
+        frame: 0,
+        frameTimer: 0,
+        dying: false,
+        deathFrame: 0,
+        deathTimer: 0,
+        weapon: random([hatch, machini]),
+        slash: random(TWO_PI),
+        throw: random(160, 210),
+        willThrow: random() < 0.1,
+        weaponThrown: false,
+        fleeing: false,
+        falling: falling,
+        fallVelocity: random(2, 5),
+        deathMode: 0,
+        deathSequenceFrame: 0,
+        deathSequenceTimer: 0
+      };
+    }
+
+    function spawnBadguy() {
+      if (badguys.length >= maxEnemies) return;
+
+      let mapWidth = map[0].length * tileSize;
+      let spawnX = -1;
+
+      for (let attempt = 0; attempt < 100; attempt++) {
+        let candidate = random(150, mapWidth - 150);
+
+        if (abs(candidate - x) < 1000) continue;
+
+        let tooClose = false;
+
+        for (let enemy of badguys) {
+          if (abs(enemy.x - candidate) < 250) {
+            tooClose = true;
+            break;
+          }
+        }
+
+        if (!tooClose) {
+          spawnX = candidate;
+          break;
+        }
+      }
+
+      if (spawnX === -1) return;
+
+      badguys.push(createBadguy(spawnX, true));
+    }
+
+    function setup() {
+      let canvas = createCanvas(1200, 960);
+      canvas.parent("design");
+
+      let enemyPositions = [
+        [3170, 3120, 3220],
+        [1800, 1750, 1850],
+        [1200, 1150, 1250],
+        [2400, 2350, 2450],
+        [2750, 2700, 2800],
+        [3700, 3650, 3750],
+        [4300, 4250, 4350],
+        [4900, 4850, 4950]
+      ];
+
+      for (let i = 0; i < enemyPositions.length; i++) {
+        let enemyX = enemyPositions[i][0];
+        let enemy = createBadguy(enemyX);
+
+        enemy.minX = enemyPositions[i][1];
+        enemy.maxX = enemyPositions[i][2];
+
+        badguys.push(enemy);
+      }
+
+      badguys[0].y = 210;
+    }
+
+    function changeFacing(newFacing) {
+      if (newFacing !== facing) {
+        playerFlipFrom = facing;
+        playerFlipTimer = 0;
+        facing = newFacing;
+      }
+    }
+
+    function getFlipScale(timer) {
+      let progress = constrain(timer / 12, 0, 1);
+      return cos(progress * PI);
+    }
+
+    function getTile(col, row) {
+      if (row < 0 || row >= map.length || col < 0 || col >= map[row].length) {
+        return ".";
+      }
+
+      return map[row][col];
+    }
+
+    function getGroundHeight(worldX, minY = 0) {
+      let col = floor(worldX / tileSize);
+      let bestHeight = 100000;
+
+      for (let i = 0; i < map.length; i++) {
+        let tile = getTile(col, i);
+        let surfaceY = null;
+
+        if (tile === "-" || tile === "#" || tile === "B") {
+          surfaceY = i * tileSize;
+        }
+
+        if (tile === "/") {
+          surfaceY = (i + 1) * tileSize - (worldX % tileSize);
+        }
+
+        if (tile === "\\") {
+          surfaceY = i * tileSize + (worldX % tileSize);
+        }
+
+        if (surfaceY !== null && surfaceY >= minY && surfaceY < bestHeight) {
+          bestHeight = surfaceY;
+        }
+      }
+
+      return bestHeight === 100000 ? 800 : bestHeight;
+    }
+
+    function getBulletSurface(worldX) {
+      let col = floor(worldX / tileSize);
+      let localX = worldX - col * tileSize;
+      let best = null;
+
+      for (let row = 0; row < map.length; row++) {
+        let tile = getTile(col, row);
+        let surfaceY = null;
+        let slope = 0;
+
+        if (tile === "#" || tile === "-" || tile === "B") {
+          surfaceY = row * tileSize;
+        }
+
+        if (tile === "/") {
+          surfaceY = (row + 1) * tileSize - localX;
+          slope = -1;
+        }
+
+        if (tile === "\\") {
+          surfaceY = row * tileSize + localX;
+          slope = 1;
+        }
+
+        if (surfaceY !== null && (best === null || surfaceY < best.y)) {
+          best = {
+            y: surfaceY,
+            slope: slope
+          };
+        }
+      }
+
+      return best;
+    }
+
+    function getSlopeAngle(worldX) {
+      let col = floor(worldX / tileSize);
+
+      for (let i = 0; i < map.length; i++) {
+        let tile = getTile(col, i);
+        let surfaceY = null;
+
+        if (tile === "/") {
+          surfaceY = (i + 1) * tileSize - (worldX % tileSize);
+        }
+
+        if (tile === "\\") {
+          surfaceY = i * tileSize + (worldX % tileSize);
+        }
+
+        if (surfaceY !== null && abs(y + 100 - surfaceY) < 15) {
+          if (tile === "/") return -PI / 4;
+          if (tile === "\\") return PI / 4;
+        }
+      }
+
+      return 0;
+    }
+
+    function drawMap() {
+      noStroke();
+
+      for (let row = 0; row < map.length; row++) {
+        for (let col = 0; col < map[row].length; col++) {
+          let tile = map[row][col];
+          let tx = col * tileSize - cameraX;
+          let ty = row * tileSize - cameraY;
+
+          if (tx < -tileSize || tx > width || ty < -tileSize || ty > height) continue;
+
+          if (tile === "#" || tile === "-") {
+            image(block, tx, ty, tileSize, tileSize);
+          }
+
+          if (tile === "B") {
+            image(bounce, tx, ty, tileSize, tileSize);
+          }
+
+          if (tile === "/") {
+            image(slope1, tx, ty, tileSize, tileSize);
+          }
+
+          if (tile === "\\") {
+            image(slope2, tx, ty, tileSize, tileSize);
+          }
+        }
+      }
+
+      fill(150, 0, 0);
+    }
+
+    function drawThrownWeapons(fScale) {
+      for (let i = thrownWeapons.length - 1; i >= 0; i--) {
+        let weapon = thrownWeapons[i];
+
+        weapon.x += weapon.vx * fScale;
+        weapon.y += weapon.vy * fScale;
+        weapon.vy += 0.18 * fScale;
+        weapon.angle += weapon.spin * fScale;
+
+        if (
+          !dead &&
+          x < weapon.x + 45 &&
+          x + 100 > weapon.x - 45 &&
+          y < weapon.y + 35 &&
+          y + 100 > weapon.y - 35
+        ) {
+          dead = 1;
+          vy = -5;
+          canJump = false;
+        }
+
+        push();
+        translate(weapon.x - cameraX, weapon.y - cameraY);
+        rotate(weapon.angle);
+        imageMode(CENTER);
+        image(weapon.image, 0, 0, 90, 60);
+        pop();
+
+        if (
+          weapon.x - cameraX < -150 ||
+          weapon.x - cameraX > width + 150 ||
+          weapon.y - cameraY > height + 150
+        ) {
+          thrownWeapons.splice(i, 1);
+        }
+      }
+    }
+
+    function drawBadguys(fScale) {
+      let enemyFrames = [b1, b2, b3, b4, b5];
+      let deathFrames = [
+        db1, db2, db3, db4, db5, db6, db7,
+        db8, db9, db10, db11, db12, db13, db14
+      ];
+      let preLFrames = [preL1, preL2, preL3, preL4];
+      let lFrames = [
+        l1, l2, l3, l4, l5, l6, l7,
+        l8, l9, l10, l11, l12, l13, l14,
+        l15, l16, l17, l18, l19, l20, l21, l22
+      ];
+
+      for (let i = badguys.length - 1; i >= 0; i--) {
+        let enemy = badguys[i];
+
+        if (dead) {
+          enemy.deathSequenceTimer += fScale * 3;
+
+          if (enemy.deathMode === 0) {
+            let prepFrame = enemy.deathSequenceFrame;
+
+            image(
+              preLFrames[prepFrame],
+              enemy.x - cameraX,
+              enemy.y - cameraY,
+              100,
+              100
+            );
+
+            if (enemy.deathSequenceTimer >= 7) {
+              enemy.deathSequenceTimer = 0;
+              enemy.deathSequenceFrame++;
+
+              if (enemy.deathSequenceFrame >= preLFrames.length) {
+                enemy.deathSequenceFrame = 0;
+                enemy.deathMode = 1;
+              }
+            }
+          } else if (enemy.deathMode === 1) {
+            image(
+              preL4,
+              enemy.x - cameraX,
+              enemy.y - cameraY,
+              100,
+              100
+            );
+
+            if (enemy.deathSequenceTimer >= 30) {
+              enemy.deathSequenceTimer = 0;
+              enemy.deathMode = 2;
+              enemy.deathSequenceFrame = 0;
+            }
+          } else {
+            image(
+              lFrames[enemy.deathSequenceFrame],
+              enemy.x - cameraX,
+              enemy.y - cameraY,
+              100,
+              100
+            );
+
+            if (enemy.deathSequenceTimer >= 7) {
+              enemy.deathSequenceTimer = 0;
+              enemy.deathSequenceFrame = (enemy.deathSequenceFrame + 1) % lFrames.length;
+            }
+          }
+
+          continue;
+        }
+
+        if (enemy.dying) {
+          enemy.deathTimer += fScale;
+
+          if (enemy.deathTimer >= 4) {
+            enemy.deathTimer = 0;
+            enemy.deathFrame++;
+          }
+
+          if (enemy.deathFrame >= deathFrames.length) {
+            badguys.splice(i, 1);
+            continue;
+          }
+
+          image(
+            deathFrames[enemy.deathFrame],
+            enemy.x - cameraX,
+            enemy.y - cameraY,
+            100,
+            100
+          );
+
+          continue;
+        }
+
+        if (enemy.falling) {
+          let previousY = enemy.y;
+
+          enemy.fallVelocity += 0.35 * fScale;
+          enemy.y += enemy.fallVelocity * fScale;
+
+          let ground = getGroundHeight(enemy.x + 50, previousY + 100);
+
+          if (enemy.y + 100 >= ground) {
+            enemy.y = ground - 100;
+            enemy.falling = false;
+            enemy.fallVelocity = 0;
+          }
+        } else if (enemy.fleeing) {
+          enemy.x += enemy.direction * 12 * fScale;
+        } else {
+          enemy.x += enemy.direction * 2 * fScale;
+
+          if (enemy.x >= enemy.maxX) {
+            enemy.x = enemy.maxX;
+            enemy.flipFrom = enemy.direction;
+            enemy.flipTimer = 0;
+            enemy.direction = -1;
+          }
+
+          if (enemy.x <= enemy.minX) {
+            enemy.x = enemy.minX;
+            enemy.flipFrom = enemy.direction;
+            enemy.flipTimer = 0;
+            enemy.direction = 1;
+          }
+        }
+        enemy.flipTimer = min(12, enemy.flipTimer + fScale);
+
+        enemy.frameTimer += fScale;
+
+        if (enemy.frameTimer >= 7) {
+          enemy.frameTimer = 0;
+          enemy.frame = (enemy.frame + 1) % enemyFrames.length;
+        }
+
+        enemy.slash += 0.28 * fScale;
+
+        let slashAngle = sin(enemy.slash) * 0.65;
+
+        let weaponCenterX = -5 + cos(slashAngle) * -42.5 - sin(slashAngle) * -12.5;
+        let weaponCenterY = sin(slashAngle) * -42.5 + cos(slashAngle) * -12.5;
+
+        let swordWorldX = enemy.x + 50 + weaponCenterX * -enemy.direction;
+        let swordWorldY = enemy.y + 50 + weaponCenterY;
+
+        if (
+          !dead &&
+          !enemy.falling &&
+          !enemy.weaponThrown &&
+          x < swordWorldX + 55 &&
+          x + 100 > swordWorldX - 55 &&
+          y < swordWorldY + 45 &&
+          y + 100 > swordWorldY - 45
+        ) {
+          dead = 1;
+          vy = -5;
+          canJump = false;
+        }
+
+        if (!enemy.falling) {
+          enemy.throw -= fScale;
+        }
+
+        if (
+          enemy.throw <= 0 &&
+          enemy.willThrow &&
+          !enemy.weaponThrown &&
+          !enemy.falling
+        ) {
+          let throwX = enemy.x + 50 + enemy.direction * 45;
+          let throwY = enemy.y + 30;
+          let targetX = x + 50;
+          let targetY = y + 50;
+          let directionX = targetX - throwX;
+          let directionY = targetY - throwY;
+          let distance = sqrt(directionX * directionX + directionY * directionY);
+
+          thrownWeapons.push({
+            x: throwX,
+            y: throwY,
+            vx: directionX / distance * 6,
+            vy: directionY / distance * 6 - 2.5,
+            angle: 0,
+            spin: enemy.direction * 0.18,
+            image: enemy.weapon
+          });
+
+          enemy.weaponThrown = true;
+          enemy.fleeing = true;
+          enemy.flipFrom = enemy.direction;
+          enemy.flipTimer = 0;
+          enemy.direction = x + 50 > enemy.x + 50 ? -1 : 1;
+        }
+
+        let enemyFlipScale = getFlipScale(enemy.flipTimer);
+
+        push();
+
+        translate(
+          enemy.x - cameraX + 50,
+          enemy.y - cameraY + 50
+        );
+
+        scale(-enemy.flipFrom * enemyFlipScale, 1);
+
+        image(enemyFrames[enemy.frame], -50, -50, 100, 100);
+
+        if (!enemy.weaponThrown) {
+          push();
+          translate(-5, 0);
+          rotate(slashAngle);
+          image(enemy.weapon, -85, -40, 85, 55);
+          pop();
+        }
+
+        pop();
+      }
+
+      if (!dead) {
+        drawThrownWeapons(fScale);
+      }
+    }
+
+    function draw() {
+      background(200);
+
+      if (!game) {
+        image(cover, 0, 0, width, height);
+        return;
+      }
+
+      image(bgg, -cameraX / 3, 0, width * 5, height);
+      fill(100, 100, 100, 200);
+      rect(0, 0, width, height);
+
+      let fScale = min(deltaTime / 16.6667, 2);
+
+      spawnTimer += fScale;
+      spawnDifficultyTimer += fScale;
+
+      if (spawnDifficultyTimer >= 1200) {
+        spawnDifficultyTimer = 0;
+        spawnInterval = max(120, spawnInterval - 30);
+      }
+
+      if (spawnTimer >= spawnInterval) {
+        spawnTimer = 0;
+        spawnBadguy();
+      }
+
+      if (stun > 0) {
+        stun = max(0, stun - fScale);
+      }
+
+      if (!dead && stun === 0) {
+        if (keyIsDown(LEFT_ARROW)) {
+          vx -= 1.5 * fScale;
+          changeFacing(-1);
+        }
+
+        if (keyIsDown(RIGHT_ARROW)) {
+          vx += 1.5 * fScale;
+          changeFacing(1);
+        }
+      }
+
+      playerFlipTimer = min(12, playerFlipTimer + fScale);
+
+      vx = constrain(vx, -12, 12);
+      vx *= pow(0.9, fScale);
+
+      if (keyIsDown(69) && !dead) {
+        angles += (facing === 1 ? -1 : 1) * 0.06 * fScale;
+      }
+
+      if (keyIsDown(68) && !dead) {
+        angles += (facing === 1 ? 1 : -1) * 0.06 * fScale;
+      }
+
+      if (facing === 1) {
+        angles = constrain(angles, -PI / 2, PI / 3);
+      } else {
+        angles = constrain(angles, -PI / 3, PI / 2);
+      }
+
+      let previousY = y;
+      let wasGrounded = canJump;
+
+      if (dead) {
+        vy += fScale / 3;
+      } else {
+        vy += fScale;
+      }
+
+      vy = min(vy, 25);
+
+      x += vx * fScale;
+
+      if (x < 70) {
+        x = 70;
+        vx = abs(vx) + 30;
+        stun = 20;
+        rWallBounce = 55;
+        changeFacing(1);
+      }
+
+      y += vy * fScale;
+
+      if (vy >= 0) {
+        let ground = getGroundHeight(x + 50, previousY + 70);
+        let groundTile = getTile(
+          floor((x + 50) / tileSize),
+          floor(ground / tileSize)
+        );
+
+        if (
+          (y + 100 >= ground && previousY + 100 <= ground + 30) ||
+          (wasGrounded && abs(previousY + 100 - ground) <= abs(vx * fScale) + 12)
+        ) {
+          y = ground - 100;
+
+          if (groundTile === "B" && !dead) {
+            vy = -28;
+            canJump = false;
+            canDoubleJump = true;
+          } else {
+            vy = 0;
+            canJump = true;
+            canDoubleJump = true;
+          }
+        } else {
+          canJump = false;
+        }
+      } else {
+        canJump = false;
+      }
+
+      cameraX = max(0, x - 500);
+      cameraY = min(0, y - 200);
+
+      playerAngle = canJump ? getSlopeAngle(x + 50) : 0;
+
+      if (rWallBounce < 70) {
+        rWallBounce += 2 * fScale;
+      } else {
+        rWallBounce = 70;
+      }
+
+      if (doubleJumping) {
+        doubleJumpTimer = min(doubleJumpDuration, doubleJumpTimer + fScale);
+        flipAngle = (doubleJumpTimer / doubleJumpDuration) * TWO_PI;
+      }
+
+      drawMap();
+
+      fill(135, 125, 12);
+      rect(-cameraX, -cameraY - 1300, rWallBounce, 2100);
+      fill(85, 75, 12);
+      rect(-cameraX - 10, -cameraY - 1300, rWallBounce, 2100);
+      fill(55, 35, 12);
+      rect(-cameraX - 40, -cameraY - 1300, rWallBounce, 2100);
+
+      for (let i = bullets.length - 1; i >= 0; i--) {
+        let bullet = bullets[i];
+
+        let previousBulletX = bullet.x;
+        let previousBulletY = bullet.y;
+
+        bullet.x += bullet.vx * fScale;
+        bullet.y += bullet.vy * fScale;
+
+        let overlapping =
+          bullet.x < x + 100 &&
+          bullet.x + 50 > x &&
+          bullet.y < y + 100 &&
+          bullet.y + 50 > y;
+
+        if (bullet.x < 70) {
+          bullet.x = 70;
+          bullet.vx = abs(bullet.vx);
+          rWallBounce = 55;
+        }
+
+        if (!overlapping) {
+          bullet.hasLeftPlayer = true;
+        }
+
+        if (overlapping && bullet.hasLeftPlayer) {
+          vy = -15;
+          dead = 1;
+          canJump = false;
+          continue;
+        }
+
+        let hitEnemy = false;
+
+        for (let j = 0; j < badguys.length; j++) {
+          let enemy = badguys[j];
+
+          if (enemy.dying || enemy.falling) continue;
+
+          if (
+            bullet.x < enemy.x + 100 &&
+            bullet.x + 50 > enemy.x &&
+            bullet.y < enemy.y + 100 &&
+            bullet.y + 50 > enemy.y
+          ) {
+            enemy.dying = true;
+            enemy.deathFrame = 0;
+            enemy.deathTimer = 0;
+            hitEnemy = true;
+            break;
+          }
+        }
+
+        if (hitEnemy) {
+          bullets.splice(i, 1);
+          continue;
+        }
+
+        let previousSurface = getBulletSurface(previousBulletX + 25);
+        let currentSurface = getBulletSurface(bullet.x + 25);
+
+        if (previousSurface && currentSurface) {
+          let previousDistance = previousBulletY + 50 - previousSurface.y;
+          let currentDistance = bullet.y + 50 - currentSurface.y;
+
+          if (
+            previousDistance <= 0 &&
+            currentDistance >= 0 &&
+            bullet.vx * (-currentSurface.slope) + bullet.vy > 0
+          ) {
+            bullet.y = currentSurface.y - 50;
+
+            let normalX = -currentSurface.slope;
+            let normalY = 1;
+            let normalLength = sqrt(normalX * normalX + normalY * normalY);
+
+            normalX /= normalLength;
+            normalY /= normalLength;
+
+            let dot = bullet.vx * normalX + bullet.vy * normalY;
+
+            bullet.vx = (bullet.vx - 2 * dot * normalX) * 0.8;
+            bullet.vy = (bullet.vy - 2 * dot * normalY) * 0.8;
+
+            bullet.bounces++;
+          }
+        }
+
+        push();
+        translate(bullet.x - cameraX + 25, bullet.y - cameraY + 25);
+        rotate(atan2(bullet.vy, bullet.vx));
+        imageMode(CENTER);
+        image(bulletImg, 0, 0, 50, 50);
+        pop();
+
+        if (
+          bullet.x - cameraX < -50 ||
+          bullet.x - cameraX > width ||
+          bullet.y - cameraY > height ||
+          bullet.y - cameraY < -50 ||
+          bullet.bounces > 5
+        ) {
+          bullets.splice(i, 1);
+        }
+      }
+
+      for (let i = blasts.length - 1; i >= 0; i--) {
+        let blast = blasts[i];
+
+        blast.timer += fScale;
+
+        if (blast.timer >= 3) {
+          blast.timer = 0;
+          blast.frame++;
+        }
+
+        if (blast.frame >= 3) {
+          blasts.splice(i, 1);
+          continue;
+        }
+
+        push();
+        translate(blast.x - cameraX, blast.y - cameraY);
+        rotate(blast.angle);
+        imageMode(CENTER);
+        image([blast1, blast2, blast3][blast.frame], 0, 0, 100, 100);
+        pop();
+      }
+
+      drawBadguys(fScale);
+
+      walking = abs(vx) > 0.1;
+
+      if (!walking) {
+        walkFrame = 1;
+      }
+
+      if (walking && !dead && !doubleJumping) {
+        walkFrame += fScale * abs(vx) * 0.1;
+
+        if (walkFrame > 6) {
+          walkFrame = 1;
+        }
+      }
+
+      let frame = constrain(floor(walkFrame) - 1, 0, 5);
+
+      let slopeOffset = canJump
+        ? 50 * (abs(cos(playerAngle)) + abs(sin(playerAngle)) - 1)
+        : 0;
+
+      if (!dead && doubleJumping) {
+        let djFrame = constrain(
+          floor((doubleJumpTimer / doubleJumpDuration) * 5),
+          0,
+          4
+        );
+
+        image(
+          [dj1, dj2, dj3, dj4, dj5][djFrame],
+          x - cameraX,
+          y - cameraY + 55,
+          100,
+          100
+        );
+      }
+
+      let playerFlipScale = getFlipScale(playerFlipTimer);
+
+      push();
+
+      translate(
+        x - cameraX + 50,
+        y - cameraY - slopeOffset + 50
+      );
+
+      scale(playerFlipFrom * playerFlipScale, 1);
+      rotate(playerAngle + flipAngle);
+      translate(-50, -50);
+
+      if (!dead) {
+        image([p1, p2, p3, p4, p5, p6][frame], 0, 0, 100, 100);
+      } else {
+        dead += fScale / 12;
+
+        let deadFrame = constrain(floor(dead) - 1, 0, 8);
+
+        image(
+          [d1, d2, d3, d4, d5, d6, d7, d8, d9][deadFrame],
+          0,
+          -45 - (2 * deadFrame),
+          100 * (1 + deadFrame / 13),
+          100 * (1 + deadFrame / 13)
+        );
+      }
+
+      pop();
+
+      if (doubleJumping && doubleJumpTimer >= doubleJumpDuration) {
+        doubleJumping = false;
+        flipAngle = 0;
+      }
+
+      if (dead) {
+        fill(40, 0, 0, 130);
+        rect(0, 0, width, height);
+        return;
+      }
+
+      push();
+
+      translate(x - cameraX + 50, y - cameraY + 50);
+      scale(playerFlipFrom * playerFlipScale, 1);
+      rotate(flipAngle);
+      rotate(angles);
+      image(gun, -40, 0, 80, 40);
+
+      pop();
+
+      canShoot = min(40, canShoot + fScale);
+    }
+
+    function keyPressed() {
+      if (!game) {
+        game = true;
+        spawnTimer = 0;
+        spawnDifficultyTimer = 0;
+        return;
+      }
+
+      if (keyCode === UP_ARROW && !dead && canJump && stun === 0) {
+        vy = -20;
+        canJump = false;
+        canDoubleJump = true;
+      } else if (keyCode === UP_ARROW && !dead && !canJump && canDoubleJump) {
+        vy = -24;
+        canDoubleJump = false;
+        doubleJumping = true;
+        doubleJumpTimer = 0;
+        flipAngle = 1;
+      }
+
+      if (keyCode === DOWN_ARROW && !canJump && !dead) {
+        vy = 18;
+        canDoubleJump = false;
+      }
+
+      if (keyCode === 32 && canShoot >= 40 && !dead) {
+        let pivotX = x + 50;
+        let pivotY = y + 50;
+
+        let directionX = facing * cos(angles);
+        let directionY = facing * sin(angles);
+
+        let rotatedDirectionX = directionX * cos(flipAngle) - directionY * sin(flipAngle);
+        let rotatedDirectionY = directionX * sin(flipAngle) + directionY * cos(flipAngle);
+
+        let bulletX = pivotX + rotatedDirectionX * 65;
+        let bulletY = pivotY + rotatedDirectionY * 65;
+
+        blasts.push({
+          x: bulletX - 10,
+          y: bulletY + 5,
+          angle: atan2(rotatedDirectionY, rotatedDirectionX),
+          frame: 0,
+          timer: 0
+        });
+
+        bullets.push({
+          x: bulletX - 25,
+          y: bulletY - 25,
+          vx: rotatedDirectionX * 40,
+          vy: rotatedDirectionY * 40,
+          bounces: 0,
+          hasLeftPlayer: false
+        });
+
+        vx = -25 * directionX;
+        vy = -30 * sin(angles);
+
+        canJump = false;
+        canShoot = 0;
+      }
+    }
+  </script>
+</body>
+</html>
