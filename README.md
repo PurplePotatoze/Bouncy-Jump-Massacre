@@ -3,7 +3,9 @@
 this game was made from scratch for hackclub haven; no game engine, premade assets or music.
 
 original music: kye tseng
+
 code (javascript p5.js) : kye tseng
+
 original art: will chia
 
 ## premise:
