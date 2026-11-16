@@ -21,12 +21,35 @@ aiming: e and d
 shooting: spacebar
 
 ## how it fits the catagory of: "bounce back"
-play and find out!
+shoot towards the wall in a 90 degree angle and find out!
 
 ## fyi
-takes a while to load on itch.io, it will be a black screen for a little while before it starts
+takes a while to load on itch.io, it will be a intro screen for a little while before it starts
+
+## What your score says about you!
+To survive this game, you must
+- not get touched by enemies
+- hit the opposing wall within the time limit
+Basically, if you touch the opposing wall, you win <b>2 points</b>
+If you kill a enemy, you win <b>1 point.</b>
+
+The score shows who you are the closest to in terms of intelligence and everything.
+<5 - taylor swift
+5-10 - drake the rapper
+11-20 - aashvik goel (friend)
+21-30 - kendrick lamar
+31-40 - jayden leaokittikul (friend)
+41-50 - tyler chair (friend)
+51-60 - mr beast
+61-70 - caseoh
+71-80 - uncle roger
+81-90 - steven he
+91-100 - will chia (maker 1)
+100-110 - kye tseng (maker 2)
+111-150 - tryhard
+150-999 - unemployed
+1000+ - get a freaking life
 
 
 ## Play
-
 https://ninew9.itch.io/bouncy-jump-massacre
