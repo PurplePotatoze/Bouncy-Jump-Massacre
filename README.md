@@ -16,7 +16,7 @@ start: any
 
 movement: arrow keys (up to jump, right/left to move)
 
-aiming: e and d
+aiming: <b>e (aims higher)</b> and <b>d (aims lower)</b>
 
 shooting: spacebar
 
