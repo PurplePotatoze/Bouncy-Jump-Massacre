@@ -2,11 +2,9 @@
 
 # Bouncy Jump Massacre
 
-this game was made from scratch for hackclub haven; no game engine, premade assets or premade music.
+this game was made from scratch for hackclub haven; no game engine or premade assets
 
-original music: kye tseng
-
-code (javascript p5.js) : kye tseng
+code (javascript p5.js) : kye tsen
 
 original art: will chia
 
