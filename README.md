@@ -33,7 +33,7 @@ To survive this game, you must
 Basically, if you touch the opposing wall, you win <b>2 points</b>
 If you kill a enemy, you win <b>1 point.</b>
 
-The score shows who you are the closest to in terms of intelligence and everything.
+The score shows who you are the closest to in terms of intelligence and everything.<br><br>
 <5 - taylor swift <br>
 5-10 - drake the rapper<br>
 11-20 - aashvik goel (friend)<br>
