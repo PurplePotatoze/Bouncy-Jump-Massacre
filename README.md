@@ -34,21 +34,21 @@ Basically, if you touch the opposing wall, you win <b>2 points</b>
 If you kill a enemy, you win <b>1 point.</b>
 
 The score shows who you are the closest to in terms of intelligence and everything.
-<5 - taylor swift
-5-10 - drake the rapper
-11-20 - aashvik goel (friend)
-21-30 - kendrick lamar
-31-40 - jayden leaokittikul (friend)
-41-50 - tyler chair (friend)
-51-60 - mr beast
-61-70 - caseoh
-71-80 - uncle roger
-81-90 - steven he
-91-100 - will chia (maker 1)
-100-110 - kye tseng (maker 2)
-111-150 - tryhard
-150-999 - unemployed
-1000+ - get a freaking life
+<5 - taylor swift <br>
+5-10 - drake the rapper<br>
+11-20 - aashvik goel (friend)<br>
+21-30 - kendrick lamar<br>
+31-40 - jayden leaokittikul (friend)<br>
+41-50 - tyler chair (friend)<br>
+51-60 - mr beast<br>
+61-70 - caseoh<br>
+71-80 - uncle roger<br>
+81-90 - steven he<br>
+91-100 - will chia (maker 1)<br>
+100-110 - kye tseng (maker 2)<br>
+111-150 - tryhard<br>
+150-999 - unemployed<br>
+1000+ - get a freaking life<br>
 
 
 ## Play
